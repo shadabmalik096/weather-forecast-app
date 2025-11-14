@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Weather Forecast</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+    .container {
+      background: white;
+      border-radius: 12px;
+      padding: 40px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+      font-size: 32px;
+    }
+    .subtitle {
+      color: #666;
+      margin-bottom: 30px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #333;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      box-sizing: border-box;
+      transition: border-color 0.3s;
+    }
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+    button {
+      background: #667eea;
+      color: white;
+      padding: 12px 30px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #5568d3;
+    }
+    .flash {
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+    }
+    .flash.error {
+      background: #fee;
+      color: #c33;
+      border: 1px solid #fcc;
+    }
+    .example {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🌤️ Weather Forecast</h1>
+    <p class="subtitle">Enter an address to get the current weather and forecast</p>
+
+    <% if flash[:error] %>
+      <div class="flash error">
+        <%= flash[:error] %>
+      </div>
+    <% end %>
+
+    <%= form_with url: forecasts_path, method: :post, local: true do |f| %>
+      <div class="form-group">
+        <%= f.label :address, "Address" %>
+        <%= f.text_field :address, 
+            placeholder: "Enter street address, city, state, zip code",
+            autofocus: true,
+            required: true %>
+        <div class="example">
+          Example: 1 Infinite Loop, Cupertino, CA 95014
+        </div>
+      </div>
+
+      <%= f.submit "Get Forecast" %>
+    <% end %>
+  </div>
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Weather Forecast Results</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+    .container {
+      background: white;
+      border-radius: 12px;
+      padding: 40px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    }
+    .back-link {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+      font-size: 28px;
+    }
+    .location {
+      color: #666;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+    .cache-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .cache-badge.cached {
+      background: #e3f2fd;
+      color: #1976d2;
+    }
+    .cache-badge.fresh {
+      background: #e8f5e9;
+      color: #388e3c;
+    }
+    .current-weather {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    .current-temp {
+      font-size: 64px;
+      font-weight: 700;
+      margin: 10px 0;
+    }
+    .current-description {
+      font-size: 18px;
+      opacity: 0.9;
+    }
+    .forecast-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .forecast-day {
+      background: #f8f9fa;
+      padding: 20px 15px;
+      border-radius: 8px;
+      text-align: center;
+      border: 1px solid #e9ecef;
+    }
+    .day-name {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+    .day-date {
+      color: #666;
+      font-size: 12px;
+      margin-bottom: 15px;
+    }
+    .temps {
+      margin: 10px 0;
+    }
+    .high {
+      color: #d32f2f;
+      font-weight: 600;
+      font-size: 18px;
+    }
+    .low {
+      color: #1976d2;
+      font-weight: 600;
+      font-size: 18px;
+    }
+    .description {
+      color: #666;
+      font-size: 12px;
+      margin-top: 10px;
+    }
+    h2 {
+      color: #333;
+      margin-top: 30px;
+      margin-bottom: 15px;
+      font-size: 22px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <%= link_to "← New Search", root_path, class: "back-link" %>
+
+    <h1>Weather Forecast</h1>
+    <div class="location">📍 <%= @address %></div>
+
+    <div class="cache-badge <%= @from_cache ? 'cached' : 'fresh' %>">
+      <% if @from_cache %>
+        ⚡ From Cache (Retrieved <%= time_ago_in_words(@cache_timestamp) %> ago)
+      <% else %>
+        🔄 Fresh Data
+      <% end %>
+    </div>
+
+    <div class="current-weather">
+      <div class="current-description">Current Temperature</div>
+      <div class="current-temp">
+        <%= @forecast_data[:current_temp].round %>°F
+      </div>
+      <div class="current-description">
+        <%= WeatherService.new.send(:weather_description, @forecast_data[:current_weather_code]) %>
+      </div>
+    </div>
+
+    <h2>7-Day Forecast</h2>
+    <div class="forecast-grid">
+      <% @forecast_data[:daily_forecast].each do |day| %>
+        <div class="forecast-day">
+          <div class="day-name">
+            <%= day[:date].strftime('%a') %>
+          </div>
+          <div class="day-date">
+            <%= day[:date].strftime('%m/%d') %>
+          </div>
+          <div class="temps">
+            <div class="high"><%= day[:high].round %>°</div>
+            <div class="low"><%= day[:low].round %>°</div>
+          </div>
+          <div class="description">
+            <%= day[:description] %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</body>
+</html>
